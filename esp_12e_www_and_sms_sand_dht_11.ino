@@ -1,22 +1,13 @@
-/*********
-  Rui Santos
-  Complete project details at https://randomnerdtutorials.com  
-*********/
-
-// Load Wi-Fi library
-#include <ESP8266WiFi.h>
+//gitHub ucr-load
+#in..clude <ESP8266WiFi.h>
 #include "DHT.h"
 #include <SoftwareSerial.h>
-#include <PubSubClient.h>
-SoftwareSerial NeoComPort(12,13);  ////d6-tx   ,d7-rx
+SoftwareSerial NeoComPort(12,13);  ////d6-tx   ,d7-rx на ESP подсоединяются к neoway
 
 
-#define DHTPIN 5
+#define DHTPIN 5    /// d1 на ESP
 #define DHTTYPE DHT11
 
-WiFiClient espClient;
-PubSubClient client(espClient);
-#define TEMP_TOPIC    "smarthome/room1/temp"
 
 DHT dht(DHTPIN, DHTTYPE);
 
@@ -37,11 +28,7 @@ String header;
 void setup() {
    Serial.begin(115200);
    NeoComPort.begin(9600);
-  // NeoComPort.print("testsms");
-  // NeoComPort.end;
-  // Initialize the output variables as outputs
-
-  dht.begin();
+   dht.begin();
    // Connect to Wi-Fi network with SSID and password
   Serial.print("Connecting to ");
   Serial.println(ssid);
@@ -73,7 +60,7 @@ void loop(){
   
   if (sended == false) {
     Serial.println("staaaaaaaart"+String(str));
-   sendsms("+79370662487","Boot OK");
+   sendsms("+79370662487","Boot OK, Temperature " + String(t));
   }
   }
   WiFiClient client = server.available();   // Listen for incoming clients
@@ -111,7 +98,7 @@ void loop(){
              client.println(F("<meta http-equiv=\"Refresh\" content=\"5\" >"));///обновление страницы раз в 15 сек.
              client.println(F("/<HEAD>"));
              client.println(F("<body><h1>Панова 50-44</h1>"));
-             client.println(F("<p>Привет Саня</p>"));
+             client.println(F("<p>Привет это ESP-12e</p>"));
              client.println(F("<p>Температура="));
              client.println(t);
              client.println(F(" Влажность="));
@@ -152,8 +139,7 @@ void loop(){
 }
 
 void sendsms(String phone, String text) {
-  float t = dht.readTemperature();
-  NeoComPort.begin(9600);
+ NeoComPort.begin(9600);
 Serial.println("SMS send started");
 //String phone = "+79608117122";
 //String text = "Blyat";    //String(t);
@@ -187,25 +173,4 @@ delay(500);
       str="Svyaz HZ";
       Serial.println("Svyaz' hz");
     }
-}
-
-void mqttconnect() {
-  /* Loop until reconnected */
-  while (!client.connected()) {
-    Serial.print("MQTT connecting ...");
-    /* client ID */
-    String clientId = "ESP32Client";
-    /* connect now */
-    if (client.connect(clientId.c_str())) {
-      Serial.println("connected");
-      /* subscribe topic with default QoS 0*/
-      client.subscribe(LED_TOPIC);
-    } else {
-      Serial.print("failed, status code =");
-      Serial.print(client.state());
-      Serial.println("try again in 5 seconds");
-      /* Wait 5 seconds before retrying */
-      delay(5000);
-    }
-  }
 }

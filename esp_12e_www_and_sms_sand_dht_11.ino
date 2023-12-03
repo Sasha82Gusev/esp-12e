@@ -1,5 +1,5 @@
 //gitHub ucr-load
-#in..clude <ESP8266WiFi.h>
+#include <ESP8266WiFi.h>
 #include "DHT.h"
 #include <SoftwareSerial.h>
 SoftwareSerial NeoComPort(12,13);  ////d6-tx   ,d7-rx на ESP подсоединяются к neoway
@@ -95,7 +95,8 @@ void loop(){
             client.println(F("<!DOCTYPE html><html>"));
              // Web Page Heading
              client.println(F("<HEAD>"));
-             client.println(F("<meta http-equiv=\"Refresh\" content=\"5\" >"));///обновление страницы раз в 15 сек.
+             //client.println(F("<meta http-equiv=\"Refresh\" content=\"5\" >"));///обновление страницы раз в 15 сек.
+             client.println(F("<meta http-equiv=\"Refresh\" content=\"5, URL=example.html\" >"));///обновление страницы раз в 15 сек.
              client.println(F("/<HEAD>"));
              client.println(F("<body><h1>Панова 50-44</h1>"));
              client.println(F("<p>Привет это ESP-12e</p>"));
